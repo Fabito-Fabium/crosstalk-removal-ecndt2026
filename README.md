@@ -1,7 +1,7 @@
 # Modeling and Removal of Electronic Crosstalk Effects in Ultrasound Signals by Deconvolution (ENCDT 2026)
 
 by 
-[Gustavo Z. Y. Wang](https://orcid.org/0000-0002-4876-2974),
+[Gustavo Z. Y. Wang](https://orcid.org/0009-0008-9170-2687),
 [Tatiana de A. Prado](https://orcid.org/0000-0002-4876-2974),
 [Thiago E. Kalid](https://orcid.org/0000-0002-2035-5349),
 [Gustavo P. Pires](https://orcid.org/0009-0008-3474-6077),
