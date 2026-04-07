@@ -1,0 +1,20 @@
+[project]
+name = "crosstalk-removal-ecndt2026"
+version = "0.1.0"
+description = "."
+authors = [
+    { name = "Fabio Z. Y. Wang", email = "fabiozhao@alunos.utfpr.edu.br" },
+]
+license = { file = "MIT" }
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "scipy",
+    "numpy",
+    "matplotlib",
+    "pyod",
+    "tqdm",
+    "pandas",
+    "mini-auspex",
+    "joblib",
+]

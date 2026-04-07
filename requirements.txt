@@ -1,0 +1,12 @@
+scikit-learn
+scikit-image
+seaborn
+numpy
+matplotlib
+pyod
+tqdm
+pandas
+mini-auspex
+joblib
+PyWavelets
+opencv-python
