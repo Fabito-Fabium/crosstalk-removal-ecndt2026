@@ -1,10 +1,11 @@
-# Machine learning–driven flaw detection for ultrasonic pipe inspections with acoustic lens (ENCDT 2026)
+# Modeling and Removal of Electronic Crosstalk Effects in Ultrasound Signals by Deconvolution (ENCDT 2026)
 
 by 
-[Thiago E. Kalid](https://orcid.org/0000-0002-2035-5349),
-[André E. Lazzaretti](https://orcid.org/0000-0003-1861-3369),
+[Gustavo Z. Y. Wang](https://orcid.org/0000-0002-4876-2974),
 [Tatiana de A. Prado](https://orcid.org/0000-0002-4876-2974),
+[Thiago E. Kalid](https://orcid.org/0000-0002-2035-5349),
 [Gustavo P. Pires](https://orcid.org/0009-0008-3474-6077),
+[Glauber Brante](https://orcid.org/0000-0001-6006-4274),
 [Daniel R. Pipa](https://orcid.org/0000-0002-9398-332X),
 [Thiago A. R. Passarin](https://orcid.org/0000-0003-1001-5911),.
 
@@ -24,7 +25,7 @@ This repository contains the data and source code used to produce the results pr
 
 ## Abstract
 
-Acoustic lenses have been recently employed during ultrasonic pipe inspection to increase the phased-array transducer coverage area. However, the lens also introduces geometrical artefacts, which affect the flaw detection process. Classic flaw detection methodologies commonly rely on thresholding, which becomes problematic when geometrical artifacts closely match the desired signal amplitude. We propose an adaptive method for flaw detection from ultrasonic inspections of tubes with acoustic lenses based on anomaly detection techniques. A  machine-learning model was trained on data from flawless pipe specimens using an acoustic lens. During training, the model captures patterns associated with the flawless pipe and lens. Then, during testing, it analyzes newly observed data and classifies it either as a flaw (anomaly) or a normal response (as in the training set). Our model, based on the Local Outlier Factor, achieved an area under the receiver operating characteristic curve of 0.96, a global accuracy of 0.95, a recall of 0.91, and an F2-score of 0.84. These results, achieved across a wide range of flaw geometries, suggest that our model could be part of an automated flaw detection system for pipeline inspections.
+The performance of an ultrasound array transducer is typically impaired by element-to-element interference, also known as crosstalk. The various approaches for reducing crosstalk generally involve modifying the transducer design or controlling the excitation waveforms. In this paper, we propose a method for modeling and removing electronic reception crosstalk in post-processing, which can serve as an alternative, or even a complement, to existing approaches. The modeling consists of estimating $N\cdot(N-1)$ Finite Impulse Responses (FIRs) that represent the effect that each $(N-1)$-th channel of the Phased Array (PA) has on the other channels. To obtain this modeling, we have performed controlled acquisitions that capture supposedly ideal signals (free from crosstalk) on one channel at a time, physically blocking the remainder channels. As a consequence, blocked channels will only capture electronic crosstalk. After the modeling stage, crosstalk removal from arbitrary datasets acquired with the modeled PA is performed via a Tikhonov-regularized inverse problem using the estimated FIRs. Experimental results show that the proposed method is able to improve the Signal-to-Interference-plus-Noise Ratio (SINR) by up to 10 dB.
 
 ## License
 All Python source code (`.py`) is made available
