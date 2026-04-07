@@ -1,0 +1,24 @@
+{
+  "preprocessing": {
+    "eps_max": 15,
+    "num_elem": 64,
+    "dtemp": 1000,
+    "npy_bscan_filename": "linear_imasonic_bscan_mod.npy"
+  },
+  "modelling": {
+    "h_len_fir": 50,
+    "npz_name_template": "linear_imasonic_{entry}_mod.npz"
+  },
+  "removal": {
+    "model_type": "FIR",
+    "solver": "standard_lsqr",
+    "lmbd_1": 6e-5,
+    "niter_1": 400,
+    "removal_m2k_filename": "Parede_menos15graus_10dB.m2k"
+  },
+  "plotting": {
+    "enable_titles": false,
+    "show": true,
+    "savefig": true
+  }
+}

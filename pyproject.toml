@@ -1,20 +1,20 @@
 [project]
 name = "crosstalk-removal-ecndt2026"
 version = "0.1.0"
-description = "."
+description = "Crosstalk removal methods for ECNDT 2026 research"
 authors = [
     { name = "Fabio Z. Y. Wang", email = "fabiozhao@alunos.utfpr.edu.br" },
 ]
-license = { file = "MIT" }
+license = { file = "LICENSE" }
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.10.12"
 dependencies = [
-    "scipy",
-    "numpy",
-    "matplotlib",
-    "pyod",
-    "tqdm",
-    "pandas",
-    "mini-auspex",
-    "joblib",
+    "scipy==1.15.3",
+    "numpy==2.2.6",
+    "matplotlib==3.10.8",
+    "mini-auspex==1.5.11",
+    "pylops==2.6.0",
+    "h5py==3.16.0",
+    "joblib==1.5.3",
+    "tqdm==4.67.3",
 ]
