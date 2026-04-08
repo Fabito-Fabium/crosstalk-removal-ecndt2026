@@ -1,4 +1,7 @@
+import sys
 from pathlib import Path
+root = Path(__file__).parent.parent
+sys.path.extend(str(root))
 import matplotlib
 
 matplotlib.use('TkAgg')
@@ -14,47 +17,52 @@ with open('config.json', 'r') as file:
     config = json.load(file)
 
     # Problem-related constants:
-    NUM_ELEM = config["preprocessing"]["num_elem"]
-    H_LEN_FIR = config["modelling"]["h_len_fir"]
-    DTEMP = config["preprocessing"]["dtemp"]
+    num_elem = config["transducer"]["num_elem"]
+    h_len = config["modelling"]["h_len"]
+    dtemp = config["preprocessing"]["dtemp"]
+    model_type = config["modelling"]["model_type"]
 
     # Important filenames:
-    npz_name = config["modelling"]["npz_name_template"].replace("{entry}", str(H_LEN_FIR))
-    npy_bscan = config["preprocessing"]["npy_bscan_filename"]
+    transducer_type = config["transducer"]["type"]
+    central_freq = config["transducer"]["central_freq_MHz"]
+    manufacturer = config["transducer"]["manufacturer"]
+    output_filename = f"{transducer_type}_{manufacturer}_{num_elem:.0f}_{central_freq:.0f}MHz"
 
     # Removal parameters:
-    removal_solver = config["removal"]["solver"]
-    model_type = config["removal"]["model_type"]
-    # iscoefs_1 = config["removal"]["iscoefs_1"]
-    lmbd_1 = config["removal"]["lmbd_1"]
-    niter_1 = config["removal"]["niter_1"]
+    removal_solver = config["removal"]["solver"]["type"]
+    lmbd_1 = config["removal"]["solver"]["lmbd_1"]
+    niter_1 = config["removal"]["solver"]["niter_1"]
 
+    model_name = f"model_{model_type}_{h_len}"
+
+    transducer_name = f"{transducer_type}_{manufacturer}_{num_elem}_{central_freq}MHz"
 # Important paths:
-root = Path(__file__).parent.parent
-data_path = root / 'data'
-model_path = data_path / "m2k" / "linear_imasonic" / "model"
-models_path = data_path / "models"
 figures_path = root / "figures"
+test_filename = Path(config['removal']['filename']).with_suffix("")
+bscan = np.load(root / "data" / "processed_data" / (str(output_filename) + ".npy"), allow_pickle=True)
+og_ascans = np.load(root / "data" / "results" / transducer_name / test_filename / str(model_name + "_og_ascan.npy"), allow_pickle=True)
+test_result = root / "data" / "results" / transducer_name / test_filename
+mask_path = root / 'data' / 'masks' / transducer_name / test_filename
 
-all_ascan = np.load(data_path / str('prePrcs_modelagem/' + npy_bscan), allow_pickle=True)
+models = np.load(root / "data" / "models" / transducer_name / str(model_name + ".npz"), allow_pickle=True)
+selected_model_1 = models[model_type]
 
 #%%
+metric_name = str(model_name) + "_" + f"{removal_solver}_lmbd{lmbd_1}_niter{niter_1}"
 
-data_insp = file_m2k.read(path1, freq_transd=5, bw_transd=0.5, tp_transd='gaussian', sel_shots=None,
+data_insp = file_m2k.read(str(root / 'data' / 'm2k' / transducer_name / 'test' / test_filename.with_suffix(".m2k")), freq_transd=5, bw_transd=0.5, tp_transd='gaussian', sel_shots=None,
                           read_ascan=True, type_insp="contact", water_path=0.0)
 eliso = data_insp[1] if isinstance(data_insp, list) else data_insp
 
-
-niter = len(np.load(md1_PATH + 'r1norm.npy'))
+niter = len(np.load(test_result / str(metric_name + '_r1norm.npy')))
 # %%
-og_asc = np.load(acqq_PATH + 'og_bscan.npy')
-est_1 = np.load(md1_PATH + 'current_x0.npy')[:-1].reshape((-1, NUM_ELEM))
+est_1 = np.load(test_result / str(metric_name + '_current_x0.npy'))[:-1].reshape((-1, num_elem))
 
-est_cr = np.load(md1_PATH + 'x_best_cr.npy').reshape((-1, NUM_ELEM))
-est_cnr = np.load(md1_PATH + 'x_best_cnr.npy').reshape((-1, NUM_ELEM))
-est_sinr = np.load(md1_PATH + 'x_best_sinr.npy').reshape((-1, NUM_ELEM))
+est_cr = np.load(test_result / str(metric_name + '_x_best_cr.npy')).reshape((-1, num_elem))
+est_cnr = np.load(test_result / str(metric_name + '_x_best_cnr.npy')).reshape((-1, num_elem))
+est_sinr = np.load(test_result / str(metric_name + '_x_best_sinr.npy')).reshape((-1, num_elem))
 
-md_list = [np.log10(envelope(og_asc)+1e-6), np.log10(envelope(est_1)+1e-6),
+md_list = [np.log10(envelope(og_ascans)+1e-6), np.log10(envelope(est_1)+1e-6),
            np.log10(envelope(est_cr)+1e-6), np.log10(envelope(est_cnr)+1e-6),
            np.log10(envelope(est_sinr)+1e-6)]
 
@@ -62,7 +70,7 @@ vmax = np.max(md_list)
 vmin = np.min(md_list)
 # %%
 plt.figure(figsize=(4, 5))
-plt.imshow(np.log10(envelope(og_asc)+1e-6), aspect='auto', interpolation='nearest', vmax=vmax, vmin=vmin, extent=[1, 65, eliso.time_grid.max(), eliso.time_grid.min()])
+plt.imshow(np.log10(envelope(og_ascans)+1e-6), aspect='auto', interpolation='nearest', vmax=vmax, vmin=vmin, extent=[1, 65, eliso.time_grid.max(), eliso.time_grid.min()])
 plt.colorbar()
 plt.ylabel(r"Time / $(\mu s)$")
 plt.xlabel("Channels")
@@ -77,13 +85,13 @@ plt.imshow(np.log10(envelope(est_1)+1e-6), interpolation='nearest', vmax=vmax, v
 plt.ylabel(r"mm")
 plt.xlabel("mm")
 plt.tight_layout()
-plt.savefig(figures_path / 'fig_11.pdf')
+# plt.savefig(figures_path / 'fig_11.pdf')
 # %%
 from matplotlib.lines import Line2D
 
 def plot_as_in_ext_abstract(bscan):
     try:
-        aux = np.load(msk_PATH + 'masks.npz')
+        aux = np.load(mask_path / 'masks.npz')
         mask = aux['signal']
         crs_mask = aux['cross']
         noise_mask = aux['noise']
@@ -120,16 +128,17 @@ def plot_as_in_ext_abstract(bscan):
     except:
         print('Não foram definidas as mascaras na presente aquisição')
 # %%
-plot_as_in_ext_abstract(og_asc)
-plt.savefig(figures_path / 'fig_00.pdf')
+plot_as_in_ext_abstract(og_ascans)
+plt.savefig(figures_path / 'fig5b.pdf')
+
 plot_as_in_ext_abstract(est_1)
-plt.savefig(figures_path / 'fig_01.pdf')
+plt.savefig(figures_path / 'fig5c.pdf')
 plt.show(block='False')
 # %%
-cr_all, cnr_all, sinr_all = np.array([get_metrics(aux, msk_PATH)[:3] for aux in [og_asc, est_1]]).T
+cr_all, cnr_all, sinr_all = np.array([get_metrics(aux, str(mask_path) + "/masks.npz")[:3] for aux in [og_ascans, est_1]]).T
 
 titles = ['CR \t\t[dB]' , 'CNR_mod [dB]', 'SINR \t[dB]']
-labels = ['Og', MODEL_TYPE[:3]]
+labels = ['Og', model_type[:3]]
 
 metrics = 10*np.log10([cr_all, cnr_all, sinr_all])
 
@@ -142,6 +151,6 @@ for idx_i, title in enumerate(titles):
     print(f'diff: \t{metrics[idx_i][1] - metrics[idx_i][0]}')
 
 # [msk_sig, msk_crs, msk_noise]
-mean_all = np.array([get_metrics(aux, msk_PATH)[3] for aux in [og_asc, est_1]])
-std_all = np.array([get_metrics(aux, msk_PATH)[4] for aux in [og_asc, est_1]])
-L2_all = np.array([get_metrics(aux, msk_PATH)[5] for aux in [og_asc, est_1]])
+mean_all = np.array([get_metrics(aux, str(mask_path) + "/masks.npz")[3] for aux in [og_ascans, est_1]])
+std_all = np.array([get_metrics(aux, str(mask_path) + "/masks.npz")[4] for aux in [og_ascans, est_1]])
+L2_all = np.array([get_metrics(aux, str(mask_path) + "/masks.npz")[5] for aux in [og_ascans, est_1]])

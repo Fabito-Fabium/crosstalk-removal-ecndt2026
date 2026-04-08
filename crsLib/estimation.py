@@ -333,7 +333,7 @@ def solve_mthd(model, solve, bscan, Nt, Ne, iscoefs=False, lmbd=1e-5, niter=20, 
 
 def get_metrics(bscan_og, msk_dir, debug=False, save_all=False):
     if not debug:
-        msk = np.load(msk_dir + 'masks.npz')
+        msk = np.load(msk_dir)
         msk_sig = msk['signal']
         msk_crs = msk['cross']
         msk_noise = msk['noise']

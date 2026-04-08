@@ -1,24 +1,26 @@
 {
   "preprocessing": {
     "eps_max": 15,
+    "dtemp": 1000
+  },
+  "transducer": {
+    "type": "linear",
+    "manufacturer": "imasonic",
     "num_elem": 64,
-    "dtemp": 1000,
-    "npy_bscan_filename": "linear_imasonic_bscan_mod.npy"
+    "central_freq_MHz": 5
   },
   "modelling": {
-    "h_len_fir": 50,
-    "npz_name_template": "linear_imasonic_{entry}_mod.npz"
+    "model_type": "FIR",
+    "h_len": 50,
+    "transducer_type": "linear_imasonic"
   },
   "removal": {
-    "model_type": "FIR",
-    "solver": "standard_lsqr",
-    "lmbd_1": 6e-5,
-    "niter_1": 400,
-    "removal_m2k_filename": "Parede_menos15graus_10dB.m2k"
-  },
-  "plotting": {
-    "enable_titles": false,
-    "show": true,
-    "savefig": true
+    "solver": {
+      "type": "standard_lsqr",
+      "lmbd_1": 6e-5,
+      "niter_1": 400
+    },
+    "filename": "Parede_menos15graus_10dB.m2k",
+    "filepath": "data/m2k/linear_imasonic_64_5MHz/test"
   }
 }
