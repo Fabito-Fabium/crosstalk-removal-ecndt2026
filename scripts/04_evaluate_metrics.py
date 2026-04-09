@@ -72,7 +72,7 @@ r1norm_1 = (np.load(test_result / str(metric_name + '_r1norm.npy'))[:])
 title = f'$||r||_2$ per iteration, \t min: $\\approx${np.min(r1norm_1):.4f}'
 plotMetrics_per_iter(r1norm_1, title, ylabel=fr'$\log(||r||_2)$')
 
-plt.savefig(figures_path / 'fig_02.pdf')
+plt.savefig(figures_path / 'convergence_log_r2.pdf')
 # %%
 with h5py.File(test_result / str(metric_name + '_metrics.h5'), 'r') as f:
     cnr_arr = np.array(f['cnr'])  # Works for both scalars and arrays
@@ -83,15 +83,15 @@ argmax_metric = np.argmax([cnr_arr, cr_arr, sinr_arr], axis=1)
 # %%
 plotMetrics_per_iter(10*np.log10(cnr_arr), title=f'CNR [dB] per iteration, argmax: {argmax_metric[0]}'
                      , ylabel=f'CNR / (dB)', logscale=False)
-plt.savefig(figures_path / 'fig_03.pdf')
+plt.savefig(figures_path / 'convergence_cnr.pdf')
 
 plotMetrics_per_iter(10*np.log10(cr_arr), title=f'CR [dB] per iteration, argmax: {argmax_metric[1]}'
                      , ylabel=f'CR / (dB)', logscale=False)
-plt.savefig(figures_path / 'fig_04.pdf')
+plt.savefig(figures_path / 'convergence_cr.pdf')
 
 plotMetrics_per_iter(10*np.log10(sinr_arr), title=f'SINR [dB] per iteration, argmax: {argmax_metric[2]}'
                      , ylabel=f'SINR / (dB)', logscale=False)
-plt.savefig(figures_path / 'fig_05.pdf')
+plt.savefig(figures_path / 'convergence_sinr.pdf')
 # %%
 
 est_cr = np.load(test_result / str(metric_name + '_x_best_cr.npy')).reshape((-1, num_elem))
@@ -140,4 +140,4 @@ plt.colorbar()
 plt.xlabel("Channels")
 plt.tight_layout()
 
-plt.savefig(figures_path / f'fig_06.pdf')
+plt.savefig(figures_path / f'metrics_comparisson.pdf')

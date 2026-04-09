@@ -88,6 +88,7 @@ except FileNotFoundError:
     plt.imshow(np.log10(envelope(og_asc)+1e-6), aspect='auto', interpolation='nearest')
     plt.show()
 
+    os.makedirs(result_model_path / test_filename, exist_ok=True)
     np.save(result_model_path / test_filename / str(model_name + '_og_ascan.npy'), og_asc)
     np.save(result_model_path / test_filename / str(model_name + '_og_bscan.npy'), bscans)
 

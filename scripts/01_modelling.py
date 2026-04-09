@@ -1,5 +1,8 @@
 import sys
 from pathlib import Path
+
+import matplotlib.pyplot as plt
+
 root = Path(__file__).parent.parent
 sys.path.extend(str(root))
 import matplotlib
@@ -119,16 +122,17 @@ f = np.linspace(1e4, 120e6, 1000)
 w, Func = ss.freqz(func, worN=f, fs=fs)
 _, Func_true = ss.freqz(func_true, worN=f, fs=fs)
 
-xx = w / (2 * np.pi)
-
 plt.figure(figsize=(3*1.2, 2*1.2))
-plt.semilogx(xx, 20 * np.log10(np.abs(Func)), label='Estimated', color='black', linewidth=2)
-plt.semilogx(xx, 20 * np.log10(np.abs(Func_true)), label='Observed', color='red', linewidth=1, linestyle='--')
+plt.semilogx(w, 20 * np.log10(np.abs(Func)), label='Estimated', color='black', linewidth=2)
+plt.semilogx(w, 20 * np.log10(np.abs(Func_true)), label='Observed', color='red', linewidth=1, linestyle='--')
+plt.axvline(5e6, ls='-', lw=0.5, color='b')
+plt.ylim([-37, 85])
+plt.fill_between(np.linspace(2.5e6, 7.5e6, 2), np.ones(2) - 100, np.ones(2) + 100, alpha=.25)
 plt.xlabel('Frequency / (Hz)')
 plt.ylabel('Amplitude / (dB)')
 plt.grid(True)
 plt.tight_layout()
-plt.savefig(figures_path / "fig4b.pdf")
+plt.savefig(figures_path / "fig3b.pdf")
 
 func_true=func_true/np.max(np.abs(func_true))
 func=func/np.max(np.abs(func))
@@ -142,22 +146,23 @@ plt.xlim([200, 800])
 plt.grid(True)
 plt.xticks([300, 400, 500, 600, 700])
 plt.tight_layout()
-plt.savefig(figures_path / "fig4a.pdf")
+plt.savefig(figures_path / "fig3a.pdf")
 
 
 plt.figure(figsize=(3*1.2, 2*1.2))
-plt.semilogx(xx, np.unwrap(np.angle(Func)), label='Estimated', color='black', linewidth=2)
-plt.semilogx(xx, np.unwrap(np.angle(Func_true)), label='Observed', color='red', linewidth=1, linestyle='--')
+plt.semilogx(w, np.unwrap(np.angle(Func)), label='Estimated', color='black', linewidth=2)
+plt.semilogx(w, np.unwrap(np.angle(Func_true)), label='Observed', color='red', linewidth=1, linestyle='--')
 plt.xlabel('Frequency / (Hz)')
 plt.ylabel('Unwrapped Phase / (rad)')
 plt.grid(True)
 plt.tight_layout()
 plt.legend(loc='upper left')
-plt.savefig(figures_path / "fig4c.pdf")
+plt.savefig(figures_path / "fig3c.pdf")
 
 # %%
 os.makedirs(models_path, exist_ok=True)
 # %%
+os.makedirs(str(models_path / output_filename), exist_ok=True)
 np.savez(models_path / output_filename / f"model_{model_type}_{h_len}.npz", FIR=h_ij_fir,
          IIRu_trunk=h_ij_iirU, IIRp_trunk=h_ij_iirP,
          IIRu_coefs=all_coefsU, IIRp_coefs=all_coefsP)
@@ -182,4 +187,4 @@ plt.imshow(np.log10(envelope(bscan[:, :, 30])), aspect='auto', extent=img_extent
 plt.xlabel('Channels')
 plt.ylabel(r'Time / $(\mu s)$')
 plt.tight_layout()
-plt.savefig(figures_path / "fig3b.pdf")
+plt.savefig(figures_path / "fig2b.pdf")

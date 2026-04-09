@@ -129,10 +129,10 @@ def plot_as_in_ext_abstract(bscan):
         print('Não foram definidas as mascaras na presente aquisição')
 # %%
 plot_as_in_ext_abstract(og_ascans)
-plt.savefig(figures_path / 'fig5b.pdf')
+plt.savefig(figures_path / 'fig4b.pdf')
 
 plot_as_in_ext_abstract(est_1)
-plt.savefig(figures_path / 'fig5c.pdf')
+plt.savefig(figures_path / 'fig4c.pdf')
 plt.show(block='False')
 # %%
 cr_all, cnr_all, sinr_all = np.array([get_metrics(aux, str(mask_path) + "/masks.npz")[:3] for aux in [og_ascans, est_1]]).T
